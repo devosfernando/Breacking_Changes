@@ -1,0 +1,4 @@
+settings.xml
+*.xlsx
+maven/
+modified/
