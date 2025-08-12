@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <offline>false</offline>
+
+    <mirrors>
+        <mirror>
+            <id>mvn-central</id>
+            <name>Other Mirror Repository</name>
+            <url>https://artifactory.globaldevtools.bbva.com/artifactory/maven.org-remote</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+
+    <servers>
+        <server>
+            <id>artifactory-LRBA-dev</id>
+            <username></username>
+            <password></password>
+        </server>
+        <server>
+            <id>artifactory-LRBA-release</id>
+            <username></username>
+            <password></password>
+        </server>
+        <server>
+            <id>mvn-central</id>
+            <username></username>
+            <password></password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <id>lrba-developer</id>
+            <repositories>
+                <repository>
+                    <id>artifactory-LRBA-release</id>
+                    <url>https://artifactory.globaldevtools.bbva.com/artifactory/gl-lrba-maven-local</url>
+                </repository>
+                <repository>
+                    <id>artifactory-LRBA-dev</id>
+                    <url>https://artifactory.globaldevtools.bbva.com/artifactory/gl-lrba-maven-dev-local</url>
+                </repository>
+            </repositories>
+            <properties>
+                <argLine>
+                -XX:+IgnoreUnrecognizedVMOptions
+                --add-opens=java.base/java.lang=ALL-UNNAMED
+                --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+                --add-opens=java.base/java.io=ALL-UNNAMED
+                --add-opens=java.base/java.net=ALL-UNNAMED
+                --add-opens=java.base/java.nio=ALL-UNNAMED
+                --add-opens=java.base/java.util=ALL-UNNAMED
+                --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+                --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
+                --add-opens=java.base/jdk.internal.ref=ALL-UNNAMED
+                --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+                --add-opens=java.base/sun.nio.cs=ALL-UNNAMED
+                --add-opens=java.base/sun.security.action=ALL-UNNAMED
+                --add-opens=java.base/sun.util.calendar=ALL-UNNAMED
+                --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED
+            </argLine>
+            </properties>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>lrba-developer</activeProfile>
+    </activeProfiles>
+
+</settings>
