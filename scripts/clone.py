@@ -2,7 +2,8 @@ import subprocess
 import os
 import re
 import json
-from scripts import constants
+import constants
+from openpyxl import Workbook, load_workbook
 
 result = []
 def parse_bitbucket_url(job,version,artifact):
@@ -25,6 +26,8 @@ def parse_bitbucket_url(job,version,artifact):
     return git_url, branch, repo_name
 
 def clone_repo(repo_urls, destination_dir=constants.SOURCE):
+    failed_repos = []
+    error_file = constants.CLONE_ERROR_XLSX
     for repo in repo_urls:
         try:
             job = repo["job"]
@@ -42,17 +45,29 @@ def clone_repo(repo_urls, destination_dir=constants.SOURCE):
             else:
                 print(f"⚠️ Ya existe {repo_path}, se omite clonación.")
 
-            # clone_cmd = ["git", "clone", "-b", branch, git_url]
-            # if destination_dir:
-            #     clone_cmd.append(destination_dir)
-
-            # subprocess.check_call(clone_cmd)
-            # print("✅ Clonación completada.")
-
         except Exception as e:
-            print(f"❌ Error al clonar {job}: {e}")
+            error_msg = str(e)
+            print(f"❌ Error al clonar {repo.get('job')}: {error_msg}")
+            failed_repos.append([repo.get("job"), repo.get("version"), repo.get("artifact"), error_msg])
 
 
+    # Guardar errores en Excel
+    if failed_repos:
+        if os.path.exists(error_file):
+            # Si ya existe, lo cargamos y agregamos filas
+            wb = load_workbook(error_file)
+            ws = wb.active
+        else:
+            # Crear uno nuevo con encabezados
+            wb = Workbook()
+            ws = wb.active
+            ws.append(["Job", "Version", "Artifact", "Error"])
+
+        for row in failed_repos:
+            ws.append(row)
+
+        wb.save(error_file)
+        print(f"📊 Errores registrados en {error_file}")
 
 # Ejemplo de uso:
 # if __name__ == "__main__":

@@ -4,8 +4,9 @@ import sys
 from datetime import datetime
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
+from scripts import constants
 
-EXCEL_ERROR_FILE = "errores_build.xlsx"
+EXCEL_ERROR_FILE = constants.ERROR_XLSX
 
 def registrar_error_en_excel(ruta_proyecto, mensaje_error, detalle):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
