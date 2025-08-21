@@ -8,7 +8,7 @@ import maven
 import stat
 from scripts import constants
 
-target_pom_version = "3.0.0"
+target_pom_version = ""
 file_path = constants.VERSIONS_XLSX
 
 def copiar_contenido(origen):
@@ -138,7 +138,8 @@ def generar_reporte(lista_inicial, lista_final, ruta_reporte):
 
 
 # ------------------- EJECUCIÓN PRINCIPAL -------------------
-def execute():
+def execute(version):
+    target_pom_version = version
     ruta_inicial = os.getenv("RUTA_INICIAL") or constants.SOURCE
     ruta_final = os.getenv("RUTA_FINAL") or constants.MODIFIED
 

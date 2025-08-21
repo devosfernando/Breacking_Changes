@@ -2,7 +2,7 @@ import subprocess
 import os
 import re
 import json
-import constants
+from scripts import constants
 from openpyxl import Workbook, load_workbook
 
 result = []

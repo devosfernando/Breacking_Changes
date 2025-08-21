@@ -15,3 +15,9 @@ ARTIFACTORY_ACCESS_TOKEN = "ARTIFACTORY_ACCESS_TOKEN"
 REPORT = "reporte_comparacion.txt"
 COOKIE = "COOKIE"
 CLONE_ERROR_XLSX = "errores_clone.xlsx"
+ITEM_SEARCH= {
+    "colombia": "-co-",
+    "mexico": "-mx-",
+    "argentina": "-ar-",
+    "peru": "-pe-",
+}

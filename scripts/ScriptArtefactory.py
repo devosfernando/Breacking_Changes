@@ -45,7 +45,6 @@ def run(input_filter, modo_latest):
     #     if input_filters and not any(f in folder_name for f in input_filters):
     #         continue
     # Procesar carpeta por carpeta
-    print("---------------------------INPUT-FILTERS--------------------",input_filters)
     for folder in base_path:
         if folder.is_dir():
             folder_name = folder.name

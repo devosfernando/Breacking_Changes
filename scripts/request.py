@@ -7,8 +7,8 @@ import os
 load_dotenv()
 
 
-cookie = os.getenv(constants.COOKIE)
-item = "-co-"
+cookie = ""
+item = ""
 
 headers = {
     "Authorization": "Bearer",
@@ -40,8 +40,9 @@ def lazy_paginated_request():
             break
 
 
-def create_request():
+def create_request(token):
 # if __name__ == "__main__":
+    cookie = token
     all_results = list(lazy_paginated_request())
     print("Total:", len(all_results))
     #return all_results
