@@ -4,11 +4,10 @@ import xml.etree.ElementTree as ET
 import re
 import sys
 from openpyxl import load_workbook, Workbook
-import maven
+from scripts import maven
 import stat
 from scripts import constants
 
-target_pom_version = ""
 file_path = constants.VERSIONS_XLSX
 
 def copiar_contenido(origen):
@@ -70,7 +69,7 @@ def update_pom_in_jar(dir_path, new_parent_version, pom_filename):
 
     return pom_path
 
-def listar_jars_recursivo(directorio, modificar=False):
+def listar_jars_recursivo(target_pom_version,directorio, modificar=False):
     if not os.path.isdir(directorio):
         print(f"❌ Directorio inválido: {directorio}")
         return []
@@ -137,6 +136,32 @@ def generar_reporte(lista_inicial, lista_final, ruta_reporte):
     print(f"✅ Reporte generado en: {ruta_reporte}")
 
 
+def return_data():
+    # Obtener la ruta base (carpeta del script actual)
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    PARENT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
+    def get_row_count(file_name):
+        # Buscar archivo en carpeta padre
+        file_path = os.path.join(PARENT_DIR, file_name)
+        if os.path.exists(file_path):
+            wb = load_workbook(file_path)
+            return wb.active.max_row
+        return 0
+
+    tot_num_filas = get_row_count(constants.PRODUCTIVE_XLSX)
+    err_num_filas = get_row_count(constants.ERROR_XLSX)
+    clo_num_filas = get_row_count(constants.CLONE_ERROR_XLSX)
+
+    data = {
+        "total": tot_num_filas,
+        "errores": err_num_filas,
+        "ok": max(tot_num_filas - err_num_filas, 0),
+        "clone": clo_num_filas
+    }
+
+    return data
+
+
 # ------------------- EJECUCIÓN PRINCIPAL -------------------
 def execute(version):
     target_pom_version = version
@@ -149,10 +174,12 @@ def execute(version):
 
     os.makedirs(ruta_final, exist_ok=True)
 
-    lista_inicial = listar_jars_recursivo(ruta_inicial, modificar=True)
-    lista_final = listar_jars_recursivo(ruta_final, modificar=False)
+    lista_inicial = listar_jars_recursivo(target_pom_version,ruta_inicial, modificar=True)
+    lista_final = listar_jars_recursivo(target_pom_version,ruta_final, modificar=False)
 
     generar_reporte(lista_inicial, lista_final, constants.REPORT)
 
     with open(constants.REPORT, 'r') as f:
         sys.stdout.write(f.read())
+    
+    return return_data()

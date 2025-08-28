@@ -3,7 +3,7 @@ from packaging import version
 import json
 from scripts import constants
 
-productivoName = "total_productivo.xlsx"
+productivoName = constants.PRODUCTIVE_XLSX
 
 def process_data(data):
     print("Processing data...\n")
@@ -45,12 +45,12 @@ def process_data(data):
         df_latest.to_excel(productivoName, index=False)
         
         # Leer el Excel completo
-        df = pd.read_excel("total_productivo.xlsx")
+        df = pd.read_excel(constants.PRODUCTIVE_XLSX)
 
         # Convertir el DataFrame a lista de diccionarios (filas completas)
         data = df.to_dict(orient="records")
         # Guardar la data en un archivo JSON temporal
-        with open("productivo_data.json", "w", encoding="utf-8") as f:
+        with open(constants.PRODUCTIVE_JSON, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"✔ Archivo generado: {productivoName}")
     else:

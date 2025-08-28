@@ -5,7 +5,7 @@ PRODUCTIVE_JSON = 'productivo_data.json'
 ERROR_XLSX = "errores_build.xlsx"
 VERSIONS_XLSX = "cambios_versiones.xlsx"
 PRODUCTIVE_XLSX = "total_productivo.xlsx"
-COLOMBIA = ["_co_","co_c","kbtq","kcol","kcsn","kusu","kskr","kful","ksan","w1bd","kmol","kdmg","kpri","kpad","kcog","atau","opei"]
+#COLOMBIA = ["_co_","co_c","kbtq","kcol","kcsn","kusu","kskr","kful","ksan","w1bd","kmol","kdmg","kpri","kpad","kcog","atau","opei"]
 MEXICO = ["_mx_","mx_m"]
 ARGENTINA = ["_ar_","ar_m"]
 PERU = ["_pe_","pe_m"]
@@ -15,9 +15,12 @@ ARTIFACTORY_ACCESS_TOKEN = "ARTIFACTORY_ACCESS_TOKEN"
 REPORT = "reporte_comparacion.txt"
 COOKIE = "COOKIE"
 CLONE_ERROR_XLSX = "errores_clone.xlsx"
+VERSIONES = ["Seleccione...", "3.0.0", "3.0.1"]
+PAISES = ["Seleccione...", "Colombia", "Mexico", "Argentina", "Peru"]
 ITEM_SEARCH= {
-    "colombia": "-co-",
+    "colombia": "ccog",
     "mexico": "-mx-",
     "argentina": "-ar-",
     "peru": "-pe-",
 }
+COLOMBIA = ["ccog"]

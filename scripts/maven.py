@@ -80,8 +80,8 @@ def build_maven_project(project_dir):
         print(f"❌ Error inesperado: {ex}")
         registrar_error_en_excel(project_dir, "Error inesperado", str(ex))
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Uso: python build_project.py <ruta_a_proyecto>")
-    else:
-        build_maven_project(sys.argv[1])
+# if __name__ == "__main__":
+#     if len(sys.argv) < 2:
+#         print("Uso: python build_project.py <ruta_a_proyecto>")
+#     else:
+#         build_maven_project(sys.argv[1])
