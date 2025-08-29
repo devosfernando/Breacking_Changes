@@ -145,7 +145,8 @@ def return_data():
         file_path = os.path.join(PARENT_DIR, file_name)
         if os.path.exists(file_path):
             wb = load_workbook(file_path)
-            return wb.active.max_row
+            count = wb.active.max_row
+            return max(count - 1, 0) 
         return 0
 
     tot_num_filas = get_row_count(constants.PRODUCTIVE_XLSX)
