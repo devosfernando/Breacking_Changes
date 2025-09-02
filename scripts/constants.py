@@ -5,6 +5,7 @@ PRODUCTIVE_JSON = 'productivo_data.json'
 ERROR_XLSX = "errores_build.xlsx"
 VERSIONS_XLSX = "cambios_versiones.xlsx"
 PRODUCTIVE_XLSX = "total_productivo.xlsx"
+TOTAL_XLSX = "total_descargas.xlsx"
 #COLOMBIA = ["_co_","co_c","kbtq","kcol","kcsn","kusu","kskr","kful","ksan","w1bd","kmol","kdmg","kpri","kpad","kcog","atau","opei"]
 MEXICO = ["_mx_","mx_m"]
 ARGENTINA = ["_ar_","ar_m"]
@@ -24,3 +25,4 @@ ITEM_SEARCH= {
     "peru": "-pe-",
 }
 COLOMBIA = ["ccog"]
+HEIGHT_ITEMS = 330

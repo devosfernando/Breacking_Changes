@@ -8,6 +8,8 @@ from scripts import process, request, clone, prepare, final, ScriptArtefactory, 
 import zipfile
 from datetime import datetime
 import os
+import shutil
+from functools import partial
 
 # ---- Redirección de stdout y stderr ----
 class EmittingStream(QObject):
@@ -90,12 +92,11 @@ class WorkerThread(QThread):
             self.error = str(e)
 
 
-
 # ---- Interfaz principal ----
 class ReportSystem(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Panel de Ejecución")
+        self.setWindowTitle("Sistema de Breacking Changes")
         self.setStyleSheet("background-color: #1e1e2f; color: white; font-family: Arial;")
         self.initUI()
 
@@ -128,53 +129,6 @@ class ReportSystem(QWidget):
         self.setLayout(grid)
         self.resize(1100, 600)
 
-    # def create_config_group(self):
-    #     group = QGroupBox("Configuración de Ejecución")
-    #     group.setStyleSheet(self.groupbox_style())
-    #     layout = QVBoxLayout()
-
-    #     label_pais = QLabel("Selecciona País:")
-    #     label_pais.setStyleSheet(self.label_style())
-    #     layout.addWidget(label_pais)
-    #     self.cb_pais = QComboBox()
-    #     self.cb_pais.addItems(constants.PAISES)
-    #     self.cb_pais.setStyleSheet(self.combobox_style())
-    #     layout.addWidget(self.cb_pais)
-
-    #     label_version = QLabel("Selecciona Versión:")
-    #     label_version.setStyleSheet(self.label_style())
-    #     layout.addWidget(label_version)
-    #     self.cb_version = QComboBox()
-    #     self.cb_version.addItems(constants.VERSIONES)
-    #     self.cb_version.setStyleSheet(self.combobox_style())
-    #     layout.addWidget(self.cb_version)
-
-    #     label_cookie = QLabel("Cookie de sesión LRBA: *")
-    #     label_cookie.setStyleSheet(self.label_style())
-    #     layout.addWidget(label_cookie)
-    #     self.cookie_text = QTextEdit()
-    #     self.cookie_text.setPlaceholderText("Ingresa la cookie de sesión...")
-    #     self.cookie_text.setFixedHeight(60)
-    #     self.cookie_text.setStyleSheet(self.groupbox_style())
-    #     layout.addWidget(self.cookie_text)
-
-    #     btn_ejecutar = QPushButton("Ejecutar")
-    #     btn_ejecutar.setStyleSheet(self.button_style())
-    #     btn_ejecutar.clicked.connect(self.generate_report)
-    #     layout.addWidget(btn_ejecutar, alignment=Qt.AlignLeft)
-
-    #     # --- Botón Descargar ---
-    #     self.btn_descargar = QPushButton("Descargar")
-    #     self.btn_descargar.setStyleSheet(self.button_style())
-    #     self.btn_descargar.setEnabled(False)  # Deshabilitado al inicio
-    #     self.btn_descargar.clicked.connect(self.descargar_resultado)
-    #     layout.addWidget(self.btn_descargar, alignment=Qt.AlignLeft)
-
-    #     group.setMinimumHeight(100)
-    #     group.setMaximumHeight(400)
-    #     group.setFixedWidth(650)
-    #     group.setLayout(layout)
-    #     return group
 
     def create_config_group(self):
         group = QGroupBox("Configuración de Ejecución")
@@ -202,7 +156,7 @@ class ReportSystem(QWidget):
         layout.addWidget(label_cookie)
         self.cookie_text = QTextEdit()
         self.cookie_text.setPlaceholderText("Ingresa la cookie de sesión...")
-        self.cookie_text.setFixedHeight(60)
+        self.cookie_text.setFixedHeight(100)
         self.cookie_text.setStyleSheet(self.groupbox_style())
         layout.addWidget(self.cookie_text)
 
@@ -228,8 +182,8 @@ class ReportSystem(QWidget):
         # Agregar el layout de botones al layout principal
         layout.addLayout(button_layout)
 
-        group.setMinimumHeight(100)
-        group.setMaximumHeight(400)
+        # group.setMinimumHeight(100)
+        group.setFixedHeight(450)
         group.setFixedWidth(650)
         group.setLayout(layout)
         return group
@@ -248,8 +202,8 @@ class ReportSystem(QWidget):
             " Sistema de detección de breaking changes iniciado\n Esperando configuración de ejecución...")
         layout.addWidget(self.log_output)
 
-        group.setMinimumHeight(100)
-        group.setMaximumHeight(400)
+        # group.setMinimumHeight(100)
+        group.setFixedHeight(constants.HEIGHT_ITEMS)
         group.setFixedWidth(650)
         group.setLayout(layout)
         return group
@@ -260,39 +214,67 @@ class ReportSystem(QWidget):
         layout = QGridLayout()
 
         # Crear tarjetas y labels
-        frame_total, self.label_total = self.stat_card("0", "Total Componentes", "#ffffff")
-        frame_error, self.label_error = self.stat_card("0", "Componentes con Error", "#ff4d4d")
-        frame_ok, self.label_ok = self.stat_card("0", "Componentes OK", "#00cc66")
-        frame_clone, self.label_clone = self.stat_card("0", "Errores en Clone", "#00cc66")
+        frame_total, self.label_total = self.stat_card("0", "Total Componentes", "#ffffff", constants.TOTAL_XLSX)
+        frame_error, self.label_error = self.stat_card("0", "Componentes con Error", "#ff4d4d", constants.ERROR_XLSX)
+        frame_ok, self.label_ok = self.stat_card("0", "Componentes OK", "#00cc66", constants.TOTAL_XLSX)
+        frame_clone, self.label_clone = self.stat_card("0", "Errores en Clone", "#ff4d4d", constants.CLONE_ERROR_XLSX)
 
-        # Agregar frames al layout
+        # Agregar frames al layout (se expanden con stretch)
         layout.addWidget(frame_total, 0, 0)
         layout.addWidget(frame_error, 0, 1)
         layout.addWidget(frame_ok, 1, 0)
         layout.addWidget(frame_clone, 1, 1)
 
+        layout.setColumnStretch(0, 1)
+        layout.setColumnStretch(1, 1)
+        layout.setRowStretch(0, 1)
+        layout.setRowStretch(1, 1)
+        layout.setSpacing(15)
+
         group.setLayout(layout)
+        group.setFixedHeight(220)
+        group.setFixedWidth(650)
         self.stats_group = group
         return group
 
-    def stat_card(self, value, text, color):
-        frame = QFrame()
-        frame.setStyleSheet("background-color: #374151; border-radius: 8px; padding: 12px;")
+    def stat_card(self, value, text, color, archivo):
+        frame = ClickableFrame()
+        frame.setStyleSheet("""
+            background-color: #374151;
+            border-radius: 12px;
+            padding: 2px;
+        """)
+
         vbox = QVBoxLayout()
 
-        label_value = QLabel(value)
-        label_value.setStyleSheet(f"color: {color}; font-size: 20px; font-weight: bold;")
-        label_value.setAlignment(Qt.AlignCenter)
-
+        # Texto arriba (descripción)
         label_text = QLabel(text)
+        label_text.setStyleSheet("""
+            color: #e5e7eb;
+            font-size: 13px;
+            font-weight: 600;
+        """)
         label_text.setAlignment(Qt.AlignCenter)
 
-        frame.setFixedWidth(200)
-        vbox.addWidget(label_value)
-        vbox.addWidget(label_text)
-        frame.setLayout(vbox)
+        # Valor grande abajo
+        label_value = QLabel(str(value))  # nos aseguramos que siempre sea string
+        label_value.setStyleSheet(f"""
+            color: {color};
+            font-size: 28px;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;  /* evita rarezas */
+        """)
+        label_value.setAlignment(Qt.AlignCenter)
 
-        return frame, label_value  # devolvemos frame y QLabel
+        # Orden correcto
+        vbox.addWidget(label_text)
+        vbox.addStretch()
+        vbox.addWidget(label_value)
+
+        frame.setLayout(vbox)
+        frame.clicked.connect(partial(self.descargar_archivo, archivo))
+        return frame, label_value
+
 
     def create_pipeline_group(self):
         """
@@ -353,8 +335,8 @@ class ReportSystem(QWidget):
             self.pipeline_bars[i-1] = bar         # guardamos por índice 0-based
             self.pipeline_labels[i-1] = lbl
 
-        group.setMinimumHeight(300)
-        group.setMaximumHeight(400)
+        # group.setMinimumHeight(300)
+        group.setFixedHeight(constants.HEIGHT_ITEMS)
         group.setFixedWidth(650)
         group.setLayout(layout)
         return group
@@ -539,7 +521,45 @@ class ReportSystem(QWidget):
         except Exception as e:
             self.log_output.append(f"Error al crear ZIP: {str(e)}")
 
+    def descargar_archivo(self, nombre_archivo: str):
+        """
+        Permite al usuario guardar una copia de un archivo existente.
+        Busca en la carpeta actual y todas las subcarpetas.
+        """
+        try:
+            # Buscar archivo en raíz y subcarpetas
+            ruta_encontrada = None
+            for root, dirs, files in os.walk("."):  # "." = raíz del proyecto
+                if nombre_archivo in files:
+                    ruta_encontrada = os.path.join(root, nombre_archivo)
+                    break
 
+            if not ruta_encontrada:
+                QMessageBox.warning(self, "Archivo no encontrado", f"No se encontró {nombre_archivo}.")
+                return
+
+            # Diálogo para elegir destino
+            destino, _ = QFileDialog.getSaveFileName(
+                self,
+                "Guardar archivo",
+                nombre_archivo,
+                "Todos (*.*)"
+            )
+
+            if destino:  # usuario eligió guardar
+                shutil.copy(ruta_encontrada, destino)
+                QMessageBox.information(self, "Éxito", f"Archivo guardado en:\n{destino}")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"No se pudo copiar el archivo:\n{e}")
+
+
+class ClickableFrame(QFrame):
+    clicked = pyqtSignal()
+
+    def mousePressEvent(self, event):
+        self.clicked.emit()
+        super().mousePressEvent(event)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
