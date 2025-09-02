@@ -1,3 +1,5 @@
+from scripts import versions
+
 FOLDER_ARTIFACTORY = 'Descargas_Atifactory'
 SOURCE = './source'
 MODIFIED = './modified'
@@ -12,11 +14,12 @@ ARGENTINA = ["_ar_","ar_m"]
 PERU = ["_pe_","pe_m"]
 ARTIFACTORY_BASE = "gl-lrba-generic-local/lrba/apps/java/spark/"
 ARTIFACTORY_URL = "https://artifactory.globaldevtools.bbva.com/artifactory"
+ARTIFACTORY_URL_VERSION = "https://artifactory.globaldevtools.bbva.com/artifactory/gl-lrba-maven-local/com/bbva/lrba/spark-job-lrba-parent/"
 ARTIFACTORY_ACCESS_TOKEN = "ARTIFACTORY_ACCESS_TOKEN"
 REPORT = "reporte_comparacion.txt"
 COOKIE = "COOKIE"
 CLONE_ERROR_XLSX = "errores_clone.xlsx"
-VERSIONES = ["Seleccione...", "3.0.0", "3.0.1"]
+VERSIONES = versions.run()
 PAISES = ["Seleccione...", "Colombia", "Mexico", "Argentina", "Peru"]
 ITEM_SEARCH= {
     "colombia": "ccog",

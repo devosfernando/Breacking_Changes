@@ -393,7 +393,7 @@ class ReportSystem(QWidget):
         param2 = self.cb_version.currentText()
         param3 = self.cookie_text.toPlainText()
 
-        if "Selecciona" in param1 or "Selecciona" in param2 or not param3.strip():
+        if "Seleccione..." in param1 or "Seleccione..." in param2 or not param3.strip():
             QMessageBox.warning(self, "Validación", "Debe seleccionar un valor para todos los parámetros.")
             return
 

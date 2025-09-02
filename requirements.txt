@@ -3,3 +3,5 @@ pandas
 openpyxl
 dotenv
 dohq-artifactory
+PyQt5
+packaging
