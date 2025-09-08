@@ -1,9 +1,10 @@
 import sys
-from PyQt5.QtCore import QObject, pyqtSignal, QThread, Qt
+from PyQt5.QtCore import QObject, pyqtSignal, QThread, Qt, QSize
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QFileDialog,
     QComboBox, QGroupBox, QFrame, QMessageBox, QTextEdit, QGridLayout, QProgressBar,QHBoxLayout
 )
+from PyQt5.QtGui import QIcon
 from scripts import process, request, clone, prepare, final, ScriptArtefactory, ScriptExcel, constants
 import zipfile
 from datetime import datetime
@@ -151,9 +152,41 @@ class ReportSystem(QWidget):
         self.cb_version.setStyleSheet(self.combobox_style())
         layout.addWidget(self.cb_version)
 
+    
+
+        # Genero este layout horizontal para poner el boton de ?
+        hbox = QHBoxLayout()
+
         label_cookie = QLabel("Cookie de sesión LRBA: *")
         label_cookie.setStyleSheet(self.label_style())
-        layout.addWidget(label_cookie)
+        hbox.addWidget(label_cookie)
+
+        # Botón informativo/descarga
+        self.info_button = QPushButton()
+        self.info_button.setIcon(QIcon("./img/test.jpg"))
+        self.info_button.setIconSize(QSize(15, 15))
+        self.info_button.setToolTip("Descargar PDF informativo")
+        self.info_button.clicked.connect(partial(self.descargar_archivo, constants.COOKIE_PDF))
+        self.info_button.setStyleSheet("""
+
+            QToolTip {
+                color: white;                 /* color del texto */
+                background-color: #2a2a2a;    /* fondo oscuro */
+                border: 1px solid #5a5a5a;    /* borde gris */
+                padding: 3px;
+                font-size: 10pt;
+            }
+        """)
+        self.info_button.setCursor(Qt.PointingHandCursor)
+        hbox.addWidget(self.info_button)
+
+        # Alinea el botón a la derecha del label
+        hbox.addStretch()
+
+        # Agregar el hbox al layout principal
+        layout.addLayout(hbox)
+
+        # Campo de texto para la cookie
         self.cookie_text = QTextEdit()
         self.cookie_text.setPlaceholderText("Ingresa la cookie de sesión...")
         self.cookie_text.setFixedHeight(100)
@@ -554,8 +587,13 @@ class ReportSystem(QWidget):
             QMessageBox.critical(self, "Error", f"No se pudo copiar el archivo:\n{e}")
 
 
+
 class ClickableFrame(QFrame):
     clicked = pyqtSignal()
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # 👇 Esto hace que siempre muestre la mano al pasar el mouse
+        self.setCursor(Qt.PointingHandCursor)
 
     def mousePressEvent(self, event):
         self.clicked.emit()
