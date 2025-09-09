@@ -24,12 +24,13 @@ def lazy_paginated_request(country,cookie):
         if response.status_code == 200:
             data = response.json()
             pagination = data.get("pagination")
+            totalPages = pagination.get("totalPages")
             items = data.get('result', [])
             if not items:
                 break
             yield from items
             page += 1
-            print("✅ Ejecutando request en consola lrba pagina", page)
+            print(f"✅ Ejecutando request en consola lrba pagina {page} de {totalPages}")
         else:
             print("Request failed")
             data = response.json()

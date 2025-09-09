@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QComboBox, QGroupBox, QFrame, QMessageBox, QTextEdit, QGridLayout, QProgressBar,QHBoxLayout
 )
 from PyQt5.QtGui import QIcon
-from scripts import process, request, clone, prepare, final, ScriptArtefactory, ScriptExcel, constants
+from scripts import artifact, process, request, clone, prepare, final, ScriptArtefactory, ScriptExcel, constants
 import zipfile
 from datetime import datetime
 import os
@@ -44,13 +44,13 @@ class WorkerThread(QThread):
     def run(self):
         try:
             input_filter = self.param1.lower()
-            modo_latest = "latest"
+            modo_latest = True
             ctx = {}  # contexto para compartir datos entre pasos
 
             # Lista de pasos: (descripcion, callable, emitir_senales)
             steps = [
                 ("Preparando entorno", lambda: prepare.init(), True),
-                ("Descargas Artifactory", lambda: ScriptArtefactory.run(input_filter, modo_latest), True),
+                ("Descargas Artifactory", lambda: artifact.run(input_filter, modo_latest), True),
                 # Grupo Excel + Request + Proceso
                 ("Request LRBA", lambda: (ScriptExcel.generar_total(), 
                                         ctx.update({"data": request.create_request(input_filter, self.param3)}),
@@ -144,7 +144,7 @@ class ReportSystem(QWidget):
         self.cb_pais.setStyleSheet(self.combobox_style())
         layout.addWidget(self.cb_pais)
 
-        label_version = QLabel("Selecciona Versión:")
+        label_version = QLabel("Selecciona Versión Objetivo:")
         label_version.setStyleSheet(self.label_style())
         layout.addWidget(label_version)
         self.cb_version = QComboBox()
@@ -170,8 +170,8 @@ class ReportSystem(QWidget):
         self.info_button.setStyleSheet("""
 
             QToolTip {
-                color: white;                 /* color del texto */
-                background-color: #2a2a2a;    /* fondo oscuro */
+                color: black;                 /* color del texto */
+                background-color: white;    /* fondo oscuro */
                 border: 1px solid #5a5a5a;    /* borde gris */
                 padding: 3px;
                 font-size: 10pt;
@@ -190,7 +190,8 @@ class ReportSystem(QWidget):
         self.cookie_text = QTextEdit()
         self.cookie_text.setPlaceholderText("Ingresa la cookie de sesión...")
         self.cookie_text.setFixedHeight(100)
-        self.cookie_text.setStyleSheet(self.groupbox_style())
+        self.cookie_text.setAcceptRichText(False)
+        self.cookie_text.setStyleSheet(self.groupbox_style_text())
         layout.addWidget(self.cookie_text)
 
         # --- Contenedor horizontal para botones ---
@@ -375,6 +376,20 @@ class ReportSystem(QWidget):
         return group
 
     # ---------- estilos reutilizables ----------
+    def groupbox_style_text(self):
+        return """
+        QGroupBox {
+            background-color: #1F2937;
+            border: 1px solid #3a3a4d;
+            color: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 10px;
+        }
+        """
+
+
     def groupbox_style(self):
         return """
         QGroupBox {
@@ -495,7 +510,7 @@ class ReportSystem(QWidget):
                 self.log_output.append(f"Error: {self.worker.error}")
             else:
                 QMessageBox.information(self, "Éxito", "Script ejecutado correctamente")
-                self.log_output.append("Proceso ejecutado.")
+                self.log_output.append("Proceso ejecutado exitosamente.  ✅")
                 self.btn_descargar.setEnabled(True)
 
                 # Obtener resultados

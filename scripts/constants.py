@@ -28,4 +28,4 @@ ITEM_SEARCH= {
     "peru": "-pe-",
 }
 HEIGHT_ITEMS = 330 #Utilizado en estilos
-COOKIE_PDF =  "cookie.doc"
+COOKIE_PDF =  "cookie.pdf"

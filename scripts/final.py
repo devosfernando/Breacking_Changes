@@ -116,24 +116,24 @@ def generar_reporte(lista_inicial, lista_final, ruta_reporte):
     faltantes = nombres_iniciales - nombres_finales
     nuevos = nombres_finales - nombres_iniciales
 
-    with open(ruta_reporte, 'w', encoding='utf-8') as f:
-        f.write("📄 REPORTE DE COMPARACIÓN DE ARCHIVOS\n\n")
-        f.write(f"TOTAL INICIALES: {len(nombres_iniciales)}\n")
-        f.write(f"TOTAL NUEVA VERSION: {len(nombres_finales)}\n\n")
+    # with open(ruta_reporte, 'w', encoding='utf-8') as f:
+    #     f.write("📄 REPORTE DE COMPARACIÓN DE ARCHIVOS\n\n")
+    #     f.write(f"TOTAL INICIALES: {len(nombres_iniciales)}\n")
+    #     f.write(f"TOTAL NUEVA VERSION: {len(nombres_finales)}\n\n")
 
-        f.write("✅ Coinciden (mismo nombre relativo):\n")
-        for archivo in sorted(comunes):
-            f.write(f"  - {archivo}\n")
+    #     f.write("✅ Coinciden (mismo nombre relativo):\n")
+    #     for archivo in sorted(comunes):
+    #         f.write(f"  - {archivo}\n")
 
-        f.write("\n🟥 Faltan en la lista final (no migrados o error):\n")
-        for archivo in sorted(faltantes):
-            f.write(f"  - {archivo}\n")
+    #     f.write("\n🟥 Faltan en la lista final (no migrados o error):\n")
+    #     for archivo in sorted(faltantes):
+    #         f.write(f"  - {archivo}\n")
 
-        f.write("\n🟩 Nuevos en lista final (no estaban en la original):\n")
-        for archivo in sorted(nuevos):
-            f.write(f"  - {archivo}\n")
+    #     f.write("\n🟩 Nuevos en lista final (no estaban en la original):\n")
+    #     for archivo in sorted(nuevos):
+    #         f.write(f"  - {archivo}\n")
 
-    print(f"✅ Reporte generado en: {ruta_reporte}")
+    # print(f"✅ Reporte generado en: {ruta_reporte}")
 
 
 def return_data():

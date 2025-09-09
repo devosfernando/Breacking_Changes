@@ -28,7 +28,8 @@ def parse_bitbucket_url(job,version,artifact):
 def clone_repo(repo_urls, destination_dir=constants.SOURCE):
     failed_repos = []
     error_file = constants.CLONE_ERROR_XLSX
-    for repo in repo_urls:
+    for i, repo in enumerate(repo_urls):
+        total = len(repo_urls)
         try:
             job = repo["job"]
             version = repo["version"]
@@ -36,7 +37,7 @@ def clone_repo(repo_urls, destination_dir=constants.SOURCE):
 
             git_url, branch, repo_name = parse_bitbucket_url(job, version, artifact)
 
-            print(f"🧩 Clonando repo: {git_url} en la rama: {branch}")
+            print(f"🧩 Clonando repo {i} de {total}: {git_url} en la rama: {branch}")
             repo_path = os.path.join(destination_dir, repo_name)
             if not os.path.exists(repo_path):
                 subprocess.check_call(["git", "clone", git_url, repo_path])
